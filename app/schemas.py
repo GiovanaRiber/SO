@@ -12,6 +12,12 @@ class ClienteCreate(ClienteBase):
     pass
 
 
+class ClienteUpdate(BaseModel):
+    nome: Optional[str] = None
+    email: Optional[EmailStr] = None
+    telefone: Optional[str] = None
+
+
 class PetBase(BaseModel):
     nome: str
     especie: Optional[str] = None
@@ -22,6 +28,14 @@ class PetBase(BaseModel):
 
 class PetCreate(PetBase):
     pass
+
+
+class PetUpdate(BaseModel):
+    nome: Optional[str] = None
+    especie: Optional[str] = None
+    raca: Optional[str] = None
+    idade: Optional[int] = None
+    cliente_id: Optional[int] = None
 
 
 class PetRead(PetBase):

@@ -32,3 +32,45 @@ def create_pet(db: Session, pet: schemas.PetCreate):
     db.commit()
     db.refresh(db_obj)
     return db_obj
+
+
+def update_cliente(db: Session, cliente_id: int, cliente_update: schemas.ClienteUpdate):
+    db_obj = get_cliente(db, cliente_id)
+    if not db_obj:
+        return None
+    for field, value in cliente_update.dict(exclude_unset=True).items():
+        setattr(db_obj, field, value)
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+
+def delete_cliente(db: Session, cliente_id: int):
+    db_obj = get_cliente(db, cliente_id)
+    if not db_obj:
+        return False
+    db.delete(db_obj)
+    db.commit()
+    return True
+
+
+def update_pet(db: Session, pet_id: int, pet_update: schemas.PetUpdate):
+    db_obj = get_pet(db, pet_id)
+    if not db_obj:
+        return None
+    for field, value in pet_update.dict(exclude_unset=True).items():
+        setattr(db_obj, field, value)
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+
+def delete_pet(db: Session, pet_id: int):
+    db_obj = get_pet(db, pet_id)
+    if not db_obj:
+        return False
+    db.delete(db_obj)
+    db.commit()
+    return True
