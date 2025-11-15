@@ -1,0 +1,45 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pet {
+  id           Int           @id @default(autoincrement())
+  nome         String
+  raca         String?
+  dono         String
+  idade        Int
+  agendamentos Agendamento[]
+  vacinas      Vacina[]
+}
+
+model Servico {
+  id           Int           @id @default(autoincrement())
+  nome         String        @unique
+  preco        Float
+  agendamentos Agendamento[]
+}
+
+model Agendamento {
+  id        Int      @id @default(autoincrement())
+  dataHora  DateTime
+  status    String   @default("Agendado")
+  petId     Int
+  servicoId Int
+  pet       Pet      @relation(fields: [petId], references: [id])
+  servico   Servico  @relation(fields: [servicoId], references: [id])
+}
+
+model Vacina {
+  id            Int       @id @default(autoincrement())
+  nomeVacina    String
+  dataAplicacao DateTime
+  proximaDose   DateTime?
+  petId         Int
+  pet           Pet       @relation(fields: [petId], references: [id])
+}
