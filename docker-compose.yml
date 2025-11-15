@@ -1,27 +1,41 @@
 services:
-  # Serviço do Backend Node (Express + Prisma + SQLite)
-  node-backend:
-    build: ./petshop-backend
-    container_name: petshop_node_backend
+  db-postgres:
+    image: postgres:15-alpine
+    container_name: db-postgres
     restart: always
-    ports:
-      - "3000:3000"
-      - "5555:5555"  # Porta extra para depuração, se necessário
-    # No bind-mount here so the container uses the image's installed dependencies
     environment:
-      NODE_ENV: production
-
-  # Serviço da View (frontend estático servido por nginx)
-  frontend:
-    image: nginx:alpine
-    container_name: petshop_frontend
-    restart: always
+      POSTGRES_USER: admin_pg
+      POSTGRES_PASSWORD: senha_forte_pg
+      POSTGRES_DB: minha_api_db_pg
     ports:
-      - "5500:80"
+      - "5432:5432"
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
-    depends_on:
-      - node-backend
+      - postgres-data:/var/lib/postgresql/data
 
-# Volumes: nenhum volume externo necessário para SQLite (o arquivo `prisma/dev.db` está versionado no repo)
-volumes: {}
+  backend:
+    build: ./backend
+    container_name: meu_backend_api
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "postgresql://admin_pg:senha_forte_pg@db-postgres:5432/minha_api_db_pg"
+    depends_on:
+      - db-postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: meu_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
+      PGADMIN_DEFAULT_PASSWORD: senha_forte_pgadmin
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - db-postgres
+
+volumes:
+  postgres-data:
+  pgadmin-data:

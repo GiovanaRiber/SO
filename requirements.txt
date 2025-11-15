@@ -1,7 +1,0 @@
-fastapi==0.100.0
-uvicorn[standard]==0.22.0
-sqlalchemy==2.0.44
-# psycopg2-binary removed temporarily because building the wheel failed on this Windows environment
-# Add a DB driver later (psycopg2-binary or psycopg) when a compatible wheel or build tools are available
-pydantic==2.6.0
-
